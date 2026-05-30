@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>iPlay Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #00f0ff;
+            --primary-dark: #00a8b3;
+            --secondary: #7b2fff;
+            --accent: #ff2d95;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(15, 15, 40, 0.85);
+            --bg-glass: rgba(255, 255, 255, 0.05);
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0c0;
+            --glow-primary: 0 0 20px rgba(0, 240, 255, 0.3);
+            --glow-secondary: 0 0 20px rgba(123, 47, 255, 0.3);
+            --glow-accent: 0 0 20px rgba(255, 45, 149, 0.3);
+            --border-glass: rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== MATRIX RAIN BACKGROUND ===== */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: #000000;        }
+
+        #matrixCanvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .matrix-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+
+        /* ===== LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 800;            font-family: 'Orbitron', sans-serif;
+            color: white;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+            animation: loadingPulse 1.5s ease-in-out infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 240, 255, 0.4); }
+            50% { transform: scale(1.1); box-shadow: 0 0 60px rgba(123, 47, 255, 0.6); }
+        }
+
+        .loading-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+        }
+
+        .loading-bar {
+            width: 120px;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-top: 16px;
+            overflow: hidden;
+        }
+
+        .loading-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 3px;
+            animation: loadingFill 1.5s ease-in-out forwards;
+        }
+
+        @keyframes loadingFill {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;            z-index: 100;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
+            box-shadow: var(--glow-primary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo-icon::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
+            animation: logoShine 3s ease-in-out infinite;
+        }
+
+        @keyframes logoShine {
+            0%, 100% { transform: translateX(-100%) rotate(45deg); }
+            50% { transform: translateX(100%) rotate(45deg); }
+        }
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .logo-text span {
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        .btn-menu {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-menu:hover, .btn-menu:active {
+            background: rgba(0, 240, 255, 0.1);
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-menu .bar {
+            width: 20px;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-menu.active .bar:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);        }
+        .btn-menu.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+        .btn-menu.active .bar:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            padding-top: 80px;
+            padding-bottom: 30px;
+            min-height: 100vh;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            padding: 16px;
+            position: sticky;
+            top: 70px;
+            z-index: 50;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            color: var(--text-secondary);
+            font-size: 18px;
+            z-index: 2;
+            transition: color 0.3s;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            background: rgba(10, 10, 30, 0.9);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: 'Exo 2', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+            background: rgba(10, 10, 30, 0.95);
+        }
+
+        .search-input:focus ~ .search-icon {
+            color: var(--primary);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 16px;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 45, 149, 0.2);
+            border: none;
+            border-radius: 50%;
+            color: var(--accent);
+            font-size: 14px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .search-clear.visible {
+            display: flex;
+        }
+
+        .search-clear:hover {
+            background: rgba(255, 45, 149, 0.4);
+        }
+
+        /* ===== APP LIST ===== */
+        .apps-list {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .apps-count {
+            padding: 0 16px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .app-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .app-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .app-item:hover::before,
+        .app-item:active::before {
+            opacity: 1;
+        }
+
+        .app-item:hover, .app-item:active {
+            border-color: rgba(0, 240, 255, 0.3);
+            transform: translateX(4px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3), var(--glow-primary);
+        }
+
+        .app-icon {
+            width: 58px;            height: 58px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 2px solid var(--border-glass);
+            flex-shrink: 0;
+            background: linear-gradient(135deg, rgba(0,240,255,0.1), rgba(123,47,255,0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 14px;
+        }
+
+        .app-icon-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+        }
+
+        .app-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .app-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .app-category {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 3px;
+            font-family: 'Rajdhani', sans-serif;            letter-spacing: 0.5px;
+        }
+
+        .app-arrow {
+            color: var(--text-secondary);
+            font-size: 18px;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .app-item:hover .app-arrow {
+            color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 30px;
+            text-align: center;
+        }
+
+        .empty-icon {
+            width: 100px;
+            height: 100px;
+            background: var(--bg-glass);
+            border: 2px dashed var(--border-glass);
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 20px;
+            animation: emptyPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes emptyPulse {
+            0%, 100% { transform: scale(1); border-color: var(--border-glass); }
+            50% { transform: scale(1.05); border-color: rgba(0, 240, 255, 0.3); }
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .empty-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* ===== APP DETAIL MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 500px;
+            max-height: 85vh;
+            background: linear-gradient(180deg, #12122e 0%, #0a0a1a 100%);
+            border-radius: 24px 24px 0 0;
+            border: 1px solid var(--border-glass);
+            border-bottom: none;
+            overflow-y: auto;
+            animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        @keyframes slideUp {            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            margin: 12px auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glass);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 45, 149, 0.2);
+            border-color: var(--accent);
+        }
+
+        .detail-header {
+            padding: 20px 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .detail-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 22px;
+            object-fit: cover;
+            border: 2px solid var(--border-glass);
+            flex-shrink: 0;            overflow: hidden;
+        }
+
+        .detail-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .detail-icon-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 20px;
+        }
+
+        .detail-info {
+            flex: 1;
+        }
+
+        .detail-name {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Exo 2', sans-serif;
+            margin-bottom: 4px;
+        }
+
+        .detail-category {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .detail-body {
+            padding: 20px;
+        }
+
+        .detail-description-label {
+            font-size: 13px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;        }
+
+        .detail-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: var(--bg-glass);
+            border-radius: 14px;
+            border: 1px solid var(--border-glass);
+        }
+
+        .detail-url-label {
+            font-size: 13px;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .detail-url {
+            font-size: 12px;
+            color: var(--text-secondary);
+            word-break: break-all;
+            padding: 12px;
+            background: var(--bg-glass);
+            border-radius: 10px;
+            border: 1px solid var(--border-glass);
+            margin-bottom: 24px;
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 16px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+        }
+        .btn-download::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-download:hover::before {
+            left: 100%;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        .btn-download:active {
+            transform: translateY(0);
+        }
+
+        /* ===== SIDE MENU ===== */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 150;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .menu-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .side-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 280px;            max-width: 85vw;
+            height: 100%;
+            background: linear-gradient(180deg, #15153a 0%, #0a0a1a 100%);
+            border-left: 1px solid var(--border-glass);
+            z-index: 160;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .side-menu.active {
+            right: 0;
+        }
+
+        .menu-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-glass);
+        }
+
+        .menu-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .menu-items {
+            padding: 12px;
+            flex: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 4px;
+            border: 1px solid transparent;
+        }
+
+        .menu-item:hover, .menu-item:active {
+            background: var(--bg-glass);
+            border-color: var(--border-glass);        }
+
+        .menu-item-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .menu-item-icon.panel {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 240, 255, 0.05));
+            color: var(--primary);
+        }
+
+        .menu-item-text {
+            flex: 1;
+        }
+
+        .menu-item-title {
+            font-size: 15px;
+            font-weight: 600;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .menu-item-subtitle {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .menu-item-arrow {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .menu-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-glass);
+            text-align: center;
+        }
+
+        .menu-footer p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Rajdhani', sans-serif;
+            letter-spacing: 1px;        }
+
+        /* ===== ADMIN PANEL ===== */
+        .panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 300;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .panel-overlay.active {
+            display: flex;
+        }
+
+        .panel-container {
+            width: 100%;
+            max-width: 500px;
+            max-height: 90vh;
+            background: linear-gradient(180deg, #15153a 0%, #0a0a1a 100%);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            animation: panelSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes panelSlide {
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .panel-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .panel-header h2 {
+            font-family: 'Orbitron', sans-serif;            font-size: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .panel-close {
+            width: 36px;
+            height: 36px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--border-glass);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .panel-close:hover {
+            background: rgba(255, 45, 149, 0.2);
+            border-color: var(--accent);
+        }
+
+        .panel-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .panel-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .panel-tab {
+            flex: 1;
+            padding: 10px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Exo 2', sans-serif;            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .panel-tab.active {
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(123, 47, 255, 0.15));
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+
+        .panel-form {
+            display: none;
+        }
+
+        .panel-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Exo 2', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.15);        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.4;
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-file-wrapper {
+            position: relative;
+        }
+
+        .form-file {
+            display: none;
+        }
+
+        .form-file-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: var(--bg-glass);
+            border: 2px dashed var(--border-glass);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .form-file-label:hover {
+            border-color: var(--primary);
+            background: rgba(0, 240, 255, 0.05);
+        }
+
+        .form-file-label.has-file {
+            border-color: var(--primary);
+            border-style: solid;
+        }
+
+        .file-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 14px;
+            object-fit: cover;
+            display: none;            border: 2px solid var(--primary);
+        }
+
+        .file-preview.visible {
+            display: block;
+        }
+
+        .file-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .file-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            margin-top: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* ===== APP LIST IN PANEL ===== */
+        .panel-app-list {
+            display: none;
+        }
+
+        .panel-app-list.active {
+            display: block;        }
+
+        .panel-app-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .panel-app-item:hover {
+            border-color: rgba(0, 240, 255, 0.2);
+        }
+
+        .panel-app-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            object-fit: cover;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .panel-app-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .panel-app-icon-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+
+        .panel-app-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .panel-app-name {            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .panel-app-url {
+            font-size: 11px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+        }
+
+        .panel-app-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-edit, .btn-delete {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: rgba(0, 240, 255, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-edit:hover {
+            background: rgba(0, 240, 255, 0.3);
+            box-shadow: var(--glow-primary);
+        }
+
+        .btn-delete {
+            background: rgba(255, 45, 149, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(255, 45, 149, 0.3);
+        }
+        .btn-delete:hover {
+            background: rgba(255, 45, 149, 0.3);
+            box-shadow: var(--glow-accent);
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            padding: 14px 24px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.9), rgba(123, 47, 255, 0.9));
+            border-radius: 14px;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Exo 2', sans-serif;
+            z-index: 500;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.3);
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast.error {
+            background: linear-gradient(135deg, rgba(255, 45, 149, 0.9), rgba(255, 100, 50, 0.9));
+            box-shadow: 0 8px 30px rgba(255, 45, 149, 0.3);
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 240, 255, 0.5);        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (min-width: 768px) {
+            .apps-list {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+
+            .app-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px;
+            }
+
+            .app-arrow {
+                display: none;
+            }
+
+            .app-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .detail-header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .detail-icon {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .apps-list {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 900px;
+                margin: 0 auto;
+            }
+        }
+
+        /* ===== CONFIRM MODAL ===== */
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 400;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .confirm-overlay.active {
+            display: flex;
+        }
+
+        .confirm-box {
+            background: linear-gradient(180deg, #15153a 0%, #0a0a1a 100%);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 24px;
+            max-width: 340px;
+            width: 100%;
+            text-align: center;
+            animation: panelSlide 0.3s ease;
+        }
+
+        .confirm-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .confirm-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-family: 'Exo 2', sans-serif;
+        }
+
+        .confirm-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-confirm-cancel, .btn-confirm-ok {            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Exo 2', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+        }
+
+        .btn-confirm-cancel {
+            background: var(--bg-glass);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-glass);
+        }
+
+        .btn-confirm-cancel:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-confirm-ok {
+            background: linear-gradient(135deg, var(--accent), #ff6b35);
+            color: white;
+        }
+
+        .btn-confirm-ok:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--glow-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- LOADING SCREEN -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">iP</div>
+        <div class="loading-text">iPlay Store</div>
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+    </div>
+
+    <!-- MATRIX RAIN BACKGROUND -->
+    <div class="matrix-bg">
+        <canvas id="matrixCanvas"></canvas>
+    </div>
+    <div class="matrix-overlay"></div>
+
+    <!-- HEADER -->    <header class="header">
+        <div class="logo">
+            <div class="logo-icon">iP</div>
+            <div class="logo-text">iPlay <span>Store</span></div>
+        </div>
+        <button class="btn-menu" id="btnMenu" onclick="toggleMenu()">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- SEARCH -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar aplicativos..." oninput="filterApps()">
+                <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+            </div>
+        </div>
+
+        <!-- APPS COUNT -->
+        <div class="apps-count" id="appsCount"></div>
+
+        <!-- APPS LIST -->
+        <div class="apps-list" id="appsList"></div>
+    </main>
+
+    <!-- SIDE MENU -->
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <nav class="side-menu" id="sideMenu">
+        <div class="menu-header">
+            <h3>☰ MENU</h3>
+        </div>
+        <div class="menu-items">
+            <div class="menu-item" onclick="openPanel()">
+                <div class="menu-item-icon panel">⚙️</div>
+                <div class="menu-item-text">
+                    <div class="menu-item-title">Painel</div>
+                    <div class="menu-item-subtitle">Gerenciar aplicativos</div>
+                </div>
+                <span class="menu-item-arrow">›</span>
+            </div>
+        </div>
+        <div class="menu-footer">
+            <p>iPlay Store v1.0.0</p>
+        </div>
+    </nav>
+    <!-- APP DETAIL MODAL -->
+    <div class="modal-overlay" id="appDetailModal">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <button class="modal-close" onclick="closeDetail()">✕</button>
+            <div class="detail-header">
+                <div class="detail-icon" id="detailIcon"></div>
+                <div class="detail-info">
+                    <div class="detail-name" id="detailName"></div>
+                    <div class="detail-category">Aplicativo</div>
+                </div>
+            </div>
+            <div class="detail-body">
+                <div class="detail-description-label">Descrição</div>
+                <div class="detail-description" id="detailDesc"></div>
+                <div class="detail-url-label">Link de Download</div>
+                <div class="detail-url" id="detailUrl"></div>
+                <button class="btn-download" id="btnDownload" onclick="downloadApp()">
+                    ⬇ Download
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="panel-overlay" id="panelOverlay">
+        <div class="panel-container">
+            <div class="panel-header">
+                <h2>⚙️ PAINEL</h2>
+                <button class="panel-close" onclick="closePanel()">✕</button>
+            </div>
+            <div class="panel-body">
+                <div class="panel-tabs">
+                    <button class="panel-tab active" onclick="switchTab('add', this)">➕ Adicionar</button>
+                    <button class="panel-tab" onclick="switchTab('list', this)">📋 Lista</button>
+                </div>
+
+                <!-- ADD FORM -->
+                <div class="panel-form active" id="formAdd">
+                    <div class="form-group">
+                        <label class="form-label">Foto do App</label>
+                        <div class="form-file-wrapper">
+                            <input type="file" class="form-file" id="appPhoto" accept="image/*" onchange="previewPhoto(this)">
+                            <label class="form-file-label" id="fileLabel" for="appPhoto">
+                                <img class="file-preview" id="filePreview">
+                                <div class="file-text">
+                                    📷 Toque para <span>selecionar foto</span>
+                                </div>
+                            </label>                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nome do App</label>
+                        <input type="text" class="form-input" id="appName" placeholder="Ex: WhatsApp">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Descrição</label>
+                        <textarea class="form-input" id="appDesc" placeholder="Descreva o aplicativo..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">URL de Download</label>
+                        <input type="url" class="form-input" id="appUrl" placeholder="https://exemplo.com/download">
+                    </div>
+                    <button class="btn-submit" id="btnSubmit" onclick="saveApp()">
+                        💾 Salvar Aplicativo
+                    </button>
+                    <button class="btn-submit" id="btnCancelEdit" onclick="cancelEdit()" style="display:none; background: linear-gradient(135deg, #666, #888); margin-top: 8px;">
+                        ✖ Cancelar Edição
+                    </button>
+                </div>
+
+                <!-- LIST -->
+                <div class="panel-app-list" id="formList">
+                    <div id="panelAppList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIRM DELETE MODAL -->
+    <div class="confirm-overlay" id="confirmOverlay">
+        <div class="confirm-box">
+            <div class="confirm-icon">⚠️</div>
+            <div class="confirm-title">Excluir App?</div>
+            <div class="confirm-text" id="confirmText">Tem certeza que deseja excluir este aplicativo? Esta ação não pode ser desfeita.</div>
+            <div class="confirm-actions">
+                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+                <button class="btn-confirm-ok" id="btnConfirmOk" onclick="confirmDelete()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // ===== DATABASE =====
+        let apps = JSON.parse(localStorage.getItem('iplay_apps')) || [];
+        let editingId = null;        let deletingId = null;
+        let currentAppUrl = '';
+
+        // ===== MATRIX RAIN =====
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const matrixChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = [];
+
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.random() * -100;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#0F0';
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Bright head
+                if (Math.random() > 0.95) {
+                    ctx.fillStyle = '#FFFFFF';
+                } else if (Math.random() > 0.9) {
+                    ctx.fillStyle = '#AAFFAA';
+                } else {
+                    const green = Math.floor(Math.random() * 155 + 100);
+                    ctx.fillStyle = `rgb(0, ${green}, 0)`;
+                }
+
+                ctx.fillText(char, x, y);
+
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(drawMatrix, 50);
+
+        window.addEventListener('resize', () => {
+            columns = Math.floor(canvas.width / fontSize);
+            const newDrops = [];
+            for (let i = 0; i < columns; i++) {
+                newDrops[i] = drops[i] || Math.random() * -100;
+            }
+            drops = newDrops;
+        });
+
+        // ===== INIT =====
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1800);
+            renderApps();
+        });
+
+        // ===== RENDER APPS =====
+        function renderApps(filter = '') {
+            const list = document.getElementById('appsList');
+            const countEl = document.getElementById('appsCount');
+
+            let filtered = apps;
+            if (filter) {
+                filtered = apps.filter(a =>
+                    a.name.toLowerCase().includes(filter.toLowerCase())
+                );
+            }
+
+            countEl.textContent = `${filtered.length} aplicativo${filtered.length !== 1 ? 's' : ''} disponível${filtered.length !== 1 ? 'is' : ''}`;
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">📱</div>
+                        <div class="empty-title">Nenhum App</div>
+                        <div class="empty-text">
+                            ${filter ? 'Nenhum aplicativo encontrado para "<b>' + filter + '</b>"' : 'Adicione aplicativos pelo Painel para começar'}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            list.innerHTML = filtered.map((app, i) => `
+                <div class="app-item" onclick="openDetail('${app.id}')">
+                    <div class="app-icon">
+                        ${app.photo
+                            ? `<img src="${app.photo}" alt="${app.name}">`
+                            : `<div class="app-icon-placeholder">📱</div>`
+                        }
+                    </div>
+                    <div class="app-info">
+                        <div class="app-name">${app.name}</div>
+                        <div class="app-category">Aplicativo</div>
+                    </div>
+                    <span class="app-arrow">›</span>
+                </div>
+            `).join('');
+        }
+
+        // ===== SEARCH =====
+        function filterApps() {
+            const val = document.getElementById('searchInput').value;
+            const clearBtn = document.getElementById('searchClear');
+            clearBtn.classList.toggle('visible', val.length > 0);
+            renderApps(val);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchClear').classList.remove('visible');
+            renderApps();
+        }
+
+        // ===== MENU =====
+        function toggleMenu() {
+            const menu = document.getElementById('sideMenu');
+            const overlay = document.getElementById('menuOverlay');
+            const btn = document.getElementById('btnMenu');
+            const isActive = menu.classList.contains('active');
+
+            if (isActive) {
+                menu.classList.remove('active');
+                overlay.classList.remove('active');
+                btn.classList.remove('active');
+            } else {
+                menu.classList.add('active');
+                overlay.classList.add('active');
+                btn.classList.add('active');
+            }
+        }
+        // ===== APP DETAIL =====
+        function openDetail(id) {
+            const app = apps.find(a => a.id === id);
+            if (!app) return;
+
+            document.getElementById('detailName').textContent = app.name;
+            document.getElementById('detailDesc').textContent = app.description || 'Sem descrição disponível.';
+            document.getElementById('detailUrl').textContent = app.url || 'Sem URL cadastrada.';
+            currentAppUrl = app.url;
+
+            const iconEl = document.getElementById('detailIcon');
+            if (app.photo) {
+                iconEl.innerHTML = `<img src="${app.photo}" alt="${app.name}">`;
+            } else {
+                iconEl.innerHTML = `<div class="detail-icon-placeholder">📱</div>`;
+            }
+
+            document.getElementById('appDetailModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetail() {
+            document.getElementById('appDetailModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function downloadApp() {
+            if (currentAppUrl) {
+                window.open(currentAppUrl, '_blank');
+            } else {
+                showToast('Nenhum link de download cadastrado', true);
+            }
+        }
+
+        // ===== PANEL =====
+        function openPanel() {
+            toggleMenu();
+            setTimeout(() => {
+                document.getElementById('panelOverlay').classList.add('active');
+                document.body.style.overflow = 'hidden';
+                renderPanelList();
+            }, 300);
+        }
+
+        function closePanel() {
+            document.getElementById('panelOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+            cancelEdit();
+        }
+        function switchTab(tab, btn) {
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            btn.classList.add('active');
+
+            document.getElementById('formAdd').classList.toggle('active', tab === 'add');
+            document.getElementById('formList').classList.toggle('active', tab === 'list');
+
+            if (tab === 'list') renderPanelList();
+        }
+
+        // ===== PHOTO PREVIEW =====
+        function previewPhoto(input) {
+            const preview = document.getElementById('filePreview');
+            const label = document.getElementById('fileLabel');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.classList.add('visible');
+                    label.classList.add('has-file');
+                    label.querySelector('.file-text').innerHTML = `✅ <span>${input.files[0].name}</span>`;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // ===== SAVE APP =====
+        function saveApp() {
+            const name = document.getElementById('appName').value.trim();
+            const desc = document.getElementById('appDesc').value.trim();
+            const url = document.getElementById('appUrl').value.trim();
+            const photoInput = document.getElementById('appPhoto');
+
+            if (!name) {
+                showToast('Preencha o nome do app!', true);
+                return;
+            }
+
+            const savePhoto = () => {
+                if (editingId) {
+                    // UPDATE
+                    const idx = apps.findIndex(a => a.id === editingId);
+                    if (idx > -1) {
+                        apps[idx].name = name;
+                        apps[idx].description = desc;
+                        apps[idx].url = url;
+                        if (currentPhotoData) {
+                            apps[idx].photo = currentPhotoData;
+                        }                    }
+                    showToast('✅ App atualizado com sucesso!');
+                    editingId = null;
+                    document.getElementById('btnSubmit').textContent = '💾 Salvar Aplicativo';
+                    document.getElementById('btnCancelEdit').style.display = 'none';
+                } else {
+                    // CREATE
+                    const newApp = {
+                        id: 'app_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                        name: name,
+                        description: desc,
+                        url: url,
+                        photo: currentPhotoData || '',
+                        createdAt: new Date().toISOString()
+                    };
+                    apps.push(newApp);
+                    showToast('✅ App adicionado com sucesso!');
+                }
+
+                localStorage.setItem('iplay_apps', JSON.stringify(apps));
+                renderApps();
+                clearForm();
+            };
+
+            if (photoInput.files && photoInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    currentPhotoData = e.target.result;
+                    savePhoto();
+                };
+                reader.readAsDataURL(photoInput.files[0]);
+            } else {
+                savePhoto();
+            }
+        }
+
+        let currentPhotoData = null;
+
+        function clearForm() {
+            document.getElementById('appName').value = '';
+            document.getElementById('appDesc').value = '';
+            document.getElementById('appUrl').value = '';
+            document.getElementById('appPhoto').value = '';
+            document.getElementById('filePreview').classList.remove('visible');
+            document.getElementById('filePreview').src = '';
+            document.getElementById('fileLabel').classList.remove('has-file');
+            document.getElementById('fileLabel').querySelector('.file-text').innerHTML = '📷 Toque para <span>selecionar foto</span>';
+            currentPhotoData = null;
+        }
+        function cancelEdit() {
+            editingId = null;
+            clearForm();
+            document.getElementById('btnSubmit').textContent = '💾 Salvar Aplicativo';
+            document.getElementById('btnCancelEdit').style.display = 'none';
+        }
+
+        // ===== EDIT APP =====
+        function editApp(id) {
+            const app = apps.find(a => a.id === id);
+            if (!app) return;
+
+            editingId = id;
+            document.getElementById('appName').value = app.name;
+            document.getElementById('appDesc').value = app.description || '';
+            document.getElementById('appUrl').value = app.url || '';
+
+            if (app.photo) {
+                currentPhotoData = app.photo;
+                document.getElementById('filePreview').src = app.photo;
+                document.getElementById('filePreview').classList.add('visible');
+                document.getElementById('fileLabel').classList.add('has-file');
+                document.getElementById('fileLabel').querySelector('.file-text').innerHTML = '✅ <span>Foto atual</span>';
+            }
+
+            document.getElementById('btnSubmit').textContent = '✏️ Atualizar Aplicativo';
+            document.getElementById('btnCancelEdit').style.display = 'block';
+
+            // Switch to add tab
+            document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel-tab')[0].classList.add('active');
+            document.getElementById('formAdd').classList.add('active');
+            document.getElementById('formList').classList.remove('active');
+        }
+
+        // ===== DELETE APP =====
+        function deleteApp(id) {
+            deletingId = id;
+            const app = apps.find(a => a.id === id);
+            document.getElementById('confirmText').textContent = `Tem certeza que deseja excluir "${app ? app.name : 'este app'}"? Esta ação não pode ser desfeita.`;
+            document.getElementById('confirmOverlay').classList.add('active');
+        }
+
+        function confirmDelete() {
+            if (deletingId) {
+                apps = apps.filter(a => a.id !== deletingId);
+                localStorage.setItem('iplay_apps', JSON.stringify(apps));
+                renderApps();
+                renderPanelList();
+                showToast('🗑️ App excluído!');                deletingId = null;
+            }
+            closeConfirm();
+        }
+
+        function closeConfirm() {
+            document.getElementById('confirmOverlay').classList.remove('active');
+        }
+
+        // ===== RENDER PANEL LIST =====
+        function renderPanelList() {
+            const container = document.getElementById('panelAppList');
+
+            if (apps.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-title">Lista Vazia</div>
+                        <div class="empty-text">Nenhum aplicativo cadastrado ainda.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = apps.map(app => `
+                <div class="panel-app-item">
+                    <div class="panel-app-icon">
+                        ${app.photo
+                            ? `<img src="${app.photo}" alt="${app.name}">`
+                            : `<div class="panel-app-icon-placeholder">📱</div>`
+                        }
+                    </div>
+                    <div class="panel-app-info">
+                        <div class="panel-app-name">${app.name}</div>
+                        <div class="panel-app-url">${app.url || 'Sem URL'}</div>
+                    </div>
+                    <div class="panel-app-actions">
+                        <button class="btn-edit" onclick="editApp('${app.id}')" title="Editar">✏️</button>
+                        <button class="btn-delete" onclick="deleteApp('${app.id}')" title="Excluir">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===== TOAST =====
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast' + (isError ? ' error' : '');
+            setTimeout(() => toast.classList.add('show'), 10);            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ===== CLOSE MODALS ON OVERLAY CLICK =====
+        document.getElementById('appDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDetail();
+        });
+
+        document.getElementById('panelOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closePanel();
+        });
+
+        document.getElementById('confirmOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeConfirm();
+        });
+
+        // ===== BACK BUTTON HANDLING =====
+        window.addEventListener('popstate', function() {
+            if (document.getElementById('appDetailModal').classList.contains('active')) {
+                closeDetail();
+            } else if (document.getElementById('panelOverlay').classList.contains('active')) {
+                closePanel();
+            } else if (document.getElementById('confirmOverlay').classList.contains('active')) {
+                closeConfirm();
+            } else if (document.getElementById('sideMenu').classList.contains('active')) {
+                toggleMenu();
+            }
+        });
+    </script>
+</body>
+</html>
