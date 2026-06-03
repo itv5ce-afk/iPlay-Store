@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>iPlay Store - Firebase</title>
+    <title>iPlay Store - Firebase Auth</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:wght@300;400;500;600;700&display=swap');
 
@@ -813,6 +813,11 @@
             color: var(--primary);
         }
 
+        .menu-item-icon.logout {
+            background: linear-gradient(135deg, rgba(255, 45, 149, 0.2), rgba(255, 45, 149, 0.05));
+            color: var(--accent);
+        }
+
         .menu-item-text {
             flex: 1;
         }
@@ -1374,13 +1379,120 @@
             transform: translateY(-2px);
             box-shadow: var(--glow-accent);
         }
+
+        /* ===== LOGIN MODAL ===== */
+        .login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 600;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-overlay.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: linear-gradient(180deg, #15153a 0%, #0a0a1a 100%);
+            border: 1px solid var(--border-glass);
+            border-radius: 28px;
+            padding: 32px 24px;
+            max-width: 360px;
+            width: 100%;
+            text-align: center;
+            animation: panelSlide 0.3s ease;
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
+        }
+
+        .login-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .login-title {
+            font-size: 22px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 14px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: 'Exo 2', sans-serif;
+            outline: none;
+            transition: all 0.3s;
+            margin-bottom: 16px;
+        }
+
+        .login-input:focus {
+            border-color: var(--primary);
+            box-shadow: var(--glow-primary);
+        }
+
+        .login-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 240, 255, 0.4);
+        }
+
+        .login-error {
+            font-size: 12px;
+            color: var(--accent);
+            margin-top: 12px;
+            min-height: 32px;
+        }
     </style>
     
     <!-- Firebase SDKs -->
     <script type="module">
         // Import Firebase SDKs
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, doc, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
         
         // Firebase configuration
         const firebaseConfig = {
@@ -1395,10 +1507,12 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
         const appsCollection = collection(db, "apps");
         
         // Export for global use
         window.db = db;
+        window.auth = auth;
         window.appsCollection = appsCollection;
         window.getDocs = getDocs;
         window.addDoc = addDoc;
@@ -1408,6 +1522,9 @@
         window.onSnapshot = onSnapshot;
         window.query = query;
         window.orderBy = orderBy;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.signOut = signOut;
         
         console.log("Firebase inicializado com sucesso!");
     </script>
@@ -1472,6 +1589,14 @@
                 <div class="menu-item-text">
                     <div class="menu-item-title">Painel</div>
                     <div class="menu-item-subtitle">Gerenciar aplicativos</div>
+                </div>
+                <span class="menu-item-arrow">›</span>
+            </div>
+            <div class="menu-item" id="logoutMenuItem" style="display:none;" onclick="logoutUser()">
+                <div class="menu-item-icon logout">🚪</div>
+                <div class="menu-item-text">
+                    <div class="menu-item-title">Sair</div>
+                    <div class="menu-item-subtitle">Encerrar sessão</div>
                 </div>
                 <span class="menu-item-arrow">›</span>
             </div>
@@ -1560,6 +1685,19 @@
         </div>
     </div>
 
+    <!-- LOGIN MODAL -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="login-icon">🔐</div>
+            <div class="login-title">Acesso Restrito</div>
+            <div class="login-subtitle">Digite suas credenciais para acessar o Painel</div>
+            <input type="email" class="login-input" id="loginEmail" placeholder="E-mail" autocomplete="email">
+            <input type="password" class="login-input" id="loginPassword" placeholder="Senha" autocomplete="current-password">
+            <button class="btn-login" onclick="doLogin()">Entrar</button>
+            <div class="login-error" id="loginError"></div>
+        </div>
+    </div>
+
     <!-- CONFIRM DELETE MODAL -->
     <div class="confirm-overlay" id="confirmOverlay">
         <div class="confirm-box">
@@ -1584,7 +1722,8 @@
         let currentAppUrl = '';
         let currentPhotoData = null;
         let unsubscribeSnapshot = null;  // Firestore real-time listener
-        
+        let isAuthenticated = false;      // Track auth state
+
         // ===== MATRIX RAIN BACKGROUND =====
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
@@ -1645,6 +1784,107 @@
             }
             drops = newDrops;
         });
+
+        // ===== AUTH STATE LISTENER =====
+        function initAuthListener() {
+            window.onAuthStateChanged(window.auth, (user) => {
+                if (user) {
+                    isAuthenticated = true;
+                    document.getElementById('logoutMenuItem').style.display = 'flex';
+                    console.log("Usuário autenticado:", user.email);
+                    // If panel is waiting to open after login, open it
+                    if (window.panelPendingOpen) {
+                        window.panelPendingOpen = false;
+                        openPanelAfterLogin();
+                    }
+                } else {
+                    isAuthenticated = false;
+                    document.getElementById('logoutMenuItem').style.display = 'none';
+                    // Close panel if open
+                    if (document.getElementById('panelOverlay').classList.contains('active')) {
+                        closePanel();
+                    }
+                    console.log("Usuário não autenticado");
+                }
+            });
+        }
+
+        // ===== LOGIN FUNCTIONS =====
+        function showLoginModal() {
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginError').innerHTML = '';
+            document.getElementById('loginOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLoginModal() {
+            document.getElementById('loginOverlay').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        async function doLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            if (!email || !password) {
+                errorDiv.innerHTML = '❌ Preencha e-mail e senha';
+                return;
+            }
+            
+            try {
+                errorDiv.innerHTML = '⏳ Autenticando...';
+                await window.signInWithEmailAndPassword(window.auth, email, password);
+                errorDiv.innerHTML = '';
+                closeLoginModal();
+                showToast('✅ Login realizado com sucesso!');
+                // Open panel after successful login
+                setTimeout(() => {
+                    openPanelAfterLogin();
+                }, 300);
+            } catch (error) {
+                console.error("Erro no login:", error);
+                if (error.code === 'auth/user-not-found') {
+                    errorDiv.innerHTML = '❌ Usuário não encontrado';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorDiv.innerHTML = '❌ Senha incorreta';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorDiv.innerHTML = '❌ E-mail inválido';
+                } else {
+                    errorDiv.innerHTML = '❌ Erro: ' + error.message;
+                }
+            }
+        }
+
+        async function logoutUser() {
+            try {
+                await window.signOut(window.auth);
+                showToast('🔓 Sessão encerrada');
+                toggleMenu(); // Close side menu
+            } catch (error) {
+                console.error("Erro ao sair:", error);
+                showToast('Erro ao sair', true);
+            }
+        }
+
+        // ===== OPEN PANEL WITH AUTH CHECK =====
+        function openPanel() {
+            toggleMenu(); // Close side menu first
+            if (isAuthenticated) {
+                openPanelAfterLogin();
+            } else {
+                // Store that we want to open panel after login
+                window.panelPendingOpen = true;
+                showLoginModal();
+            }
+        }
+
+        function openPanelAfterLogin() {
+            document.getElementById('panelOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            renderPanelList();
+        }
 
         // ===== FIREBASE REAL-TIME LISTENER =====
         async function initFirebaseListener() {
@@ -1814,16 +2054,7 @@
             }
         }
 
-        // ===== PANEL =====
-        function openPanel() {
-            toggleMenu();
-            setTimeout(() => {
-                document.getElementById('panelOverlay').classList.add('active');
-                document.body.style.overflow = 'hidden';
-                renderPanelList();
-            }, 300);
-        }
-
+        // ===== PANEL FUNCTIONS (only accessible when authenticated) =====
         function closePanel() {
             document.getElementById('panelOverlay').classList.remove('active');
             document.body.style.overflow = '';
@@ -1860,6 +2091,11 @@
 
         // ===== SAVE APP (Firebase) =====
         async function saveApp() {
+            if (!isAuthenticated) {
+                showToast('Você precisa estar logado para salvar aplicativos', true);
+                return;
+            }
+            
             const name = document.getElementById('appName').value.trim();
             const desc = document.getElementById('appDesc').value.trim();
             const url = document.getElementById('appUrl').value.trim();
@@ -1929,6 +2165,11 @@
 
         // ===== EDIT APP =====
         function editApp(id) {
+            if (!isAuthenticated) {
+                showToast('Você precisa estar logado para editar', true);
+                return;
+            }
+            
             const app = apps.find(a => a.id === id);
             if (!app) return;
 
@@ -1959,6 +2200,10 @@
 
         // ===== DELETE APP =====
         function deleteApp(id) {
+            if (!isAuthenticated) {
+                showToast('Você precisa estar logado para excluir', true);
+                return;
+            }
             deletingId = id;
             const app = apps.find(a => a.id === id);
             document.getElementById('confirmText').textContent = `Tem certeza que deseja excluir "${app ? app.name : 'este app'}"? Esta ação não pode ser desfeita.`;
@@ -2041,6 +2286,10 @@
             if (e.target === this) closeConfirm();
         });
 
+        document.getElementById('loginOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeLoginModal();
+        });
+
         // ===== BACK BUTTON HANDLING =====
         window.addEventListener('popstate', function() {
             if (document.getElementById('appDetailModal').classList.contains('active')) {
@@ -2049,6 +2298,8 @@
                 closePanel();
             } else if (document.getElementById('confirmOverlay').classList.contains('active')) {
                 closeConfirm();
+            } else if (document.getElementById('loginOverlay').classList.contains('active')) {
+                closeLoginModal();
             } else if (document.getElementById('sideMenu').classList.contains('active')) {
                 toggleMenu();
             }
@@ -2056,7 +2307,9 @@
         
         // ===== INITIALIZE APP =====
         window.addEventListener('load', () => {
-            // Keep loading screen visible until Firebase data loads
+            // Initialize auth listener first
+            initAuthListener();
+            // Initialize Firebase Firestore listener
             setTimeout(() => {
                 initFirebaseListener();
             }, 100);
