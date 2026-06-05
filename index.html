@@ -47,8 +47,7 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            background: #000000;
-        }
+            background: #000000;        }
 
         #matrixCanvas {
             display: block;
@@ -89,35 +88,40 @@
         }
 
         .loading-logo {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 24px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 36px;
-            font-weight: 800;
-            font-family: 'Orbitron', sans-serif;
-            color: white;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(123, 47, 255, 0.3);
             animation: loadingPulse 1.5s ease-in-out infinite;
-            margin-bottom: 20px;
+            margin-bottom: 20px;            overflow: hidden;
+            background: linear-gradient(135deg, #00f0ff, #7b2fff, #ff2d95);
+            padding: 3px;
+        }
+
+        .loading-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         @keyframes loadingPulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 40px rgba(0, 240, 255, 0.4); }
-            50% { transform: scale(1.1); box-shadow: 0 0 60px rgba(123, 47, 255, 0.6); }
+            0%, 100% { transform: scale(1); box-shadow: 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(123, 47, 255, 0.3); }
+            50% { transform: scale(1.15); box-shadow: 0 0 80px rgba(123, 47, 255, 0.7), 0 0 120px rgba(0, 240, 255, 0.5); }
         }
 
         .loading-text {
             font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
+            font-size: 24px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             letter-spacing: 3px;
+            font-weight: 700;
         }
 
         .loading-bar {
@@ -141,9 +145,7 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
-
-        /* ===== HEADER ===== */
-        .header {
+        /* ===== HEADER ===== */        .header {
             position: fixed;
             top: 0;
             left: 0;
@@ -163,35 +165,40 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-radius: 12px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
-            font-weight: 800;
-            font-family: 'Orbitron', sans-serif;
-            color: white;
             box-shadow: var(--glow-primary);
             position: relative;
             overflow: hidden;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 2px;
+            flex-shrink: 0;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .logo-icon::after {
             content: '';
             position: absolute;
             top: -50%;
-            left: -50%;
-            width: 200%;
+            left: -50%;            width: 200%;
             height: 200%;
             background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
             animation: logoShine 3s ease-in-out infinite;
+            z-index: 1;
         }
 
         @keyframes logoShine {
@@ -200,7 +207,7 @@
         }
         .logo-text {
             font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 700;
             background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
             -webkit-background-clip: text;
@@ -211,7 +218,7 @@
 
         .logo-text span {
             font-weight: 400;
-            font-size: 14px;
+            font-size: 15px;
         }
 
         .btn-menu {
@@ -236,9 +243,7 @@
             border-color: var(--primary);
             box-shadow: var(--glow-primary);
         }
-
-        .btn-menu .bar {
-            width: 20px;
+        .btn-menu .bar {            width: 20px;
             height: 2px;
             background: var(--primary);
             border-radius: 2px;
@@ -287,8 +292,7 @@
 
         .search-input {
             width: 100%;
-            padding: 14px 16px 14px 48px;
-            background: rgba(10, 10, 30, 0.9);
+            padding: 14px 16px 14px 48px;            background: rgba(10, 10, 30, 0.9);
             border: 1px solid var(--border-glass);
             border-radius: 16px;
             color: var(--text-primary);
@@ -338,7 +342,6 @@
         .search-clear:hover {
             background: rgba(255, 45, 149, 0.4);
         }
-
         /* ===== APP LIST ===== */
         .apps-list {
             padding: 0 16px;
@@ -387,7 +390,6 @@
         .app-item:active::before {
             opacity: 1;
         }
-
         .app-item:hover, .app-item:active {
             border-color: rgba(0, 240, 255, 0.3);
             transform: translateX(4px);
@@ -437,8 +439,7 @@
             color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
-            font-family: 'Exo 2', sans-serif;
+            text-overflow: ellipsis;            font-family: 'Exo 2', sans-serif;
         }
 
         .app-category {
@@ -487,8 +488,7 @@
 
         @keyframes emptyPulse {
             0%, 100% { transform: scale(1); border-color: var(--border-glass); }
-            50% { transform: scale(1.05); border-color: rgba(0, 240, 255, 0.3); }
-        }
+            50% { transform: scale(1.05); border-color: rgba(0, 240, 255, 0.3); }        }
 
         .empty-title {
             font-size: 20px;
@@ -537,8 +537,7 @@
             max-width: 500px;
             max-height: 85vh;
             background: linear-gradient(180deg, #12122e 0%, #0a0a1a 100%);
-            border-radius: 24px 24px 0 0;
-            border: 1px solid var(--border-glass);
+            border-radius: 24px 24px 0 0;            border: 1px solid var(--border-glass);
             border-bottom: none;
             overflow-y: auto;
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -588,7 +587,6 @@
             align-items: center;
             gap: 16px;
         }
-
         .detail-icon {
             width: 80px;
             height: 80px;
@@ -638,7 +636,6 @@
         .detail-body {
             padding: 20px;
         }
-
         .detail-description-label {
             font-size: 13px;
             color: var(--primary);
@@ -687,8 +684,7 @@
             border-radius: 16px;
             color: white;
             font-size: 16px;
-            font-weight: 700;
-            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;            font-family: 'Orbitron', sans-serif;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -737,8 +733,7 @@
 
         .menu-overlay.active {
             display: block;
-            opacity: 1;
-        }
+            opacity: 1;        }
 
         .side-menu {
             position: fixed;
@@ -763,6 +758,23 @@
         .menu-header {
             padding: 24px 20px;
             border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .menu-header-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .menu-header-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .menu-header h3 {
@@ -770,8 +782,7 @@
             font-size: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-text-fill-color: transparent;            background-clip: text;
             letter-spacing: 2px;
         }
 
@@ -821,7 +832,6 @@
         .menu-item-text {
             flex: 1;
         }
-
         .menu-item-title {
             font-size: 15px;
             font-weight: 600;
@@ -871,7 +881,6 @@
         .panel-overlay.active {
             display: flex;
         }
-
         .panel-container {
             width: 100%;
             max-width: 500px;
@@ -920,8 +929,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
-        }
+            transition: all 0.3s;        }
 
         .panel-close:hover {
             background: rgba(255, 45, 149, 0.2);
@@ -969,10 +977,8 @@
         .panel-form.active {
             display: block;
         }
-
         .form-group {
-            margin-bottom: 18px;
-        }
+            margin-bottom: 18px;        }
 
         .form-label {
             display: block;
@@ -1019,11 +1025,9 @@
         .form-file {
             display: none;
         }
-
         .form-file-label {
             display: flex;
-            align-items: center;
-            justify-content: center;
+            align-items: center;            justify-content: center;
             gap: 10px;
             padding: 20px;
             background: var(--bg-glass);
@@ -1072,8 +1076,7 @@
             padding: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 14px;
-            color: white;
+            border-radius: 14px;            color: white;
             font-size: 15px;
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
@@ -1122,8 +1125,7 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            object-fit: cover;
-            flex-shrink: 0;
+            object-fit: cover;            flex-shrink: 0;
             overflow: hidden;
         }
 
@@ -1172,8 +1174,7 @@
         }
 
         .btn-edit, .btn-delete {
-            width: 36px;
-            height: 36px;
+            width: 36px;            height: 36px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
@@ -1223,7 +1224,6 @@
             box-shadow: 0 8px 30px rgba(0, 240, 255, 0.3);
             white-space: nowrap;
         }
-
         .toast.show {
             transform: translateX(-50%) translateY(0);
         }
@@ -1268,12 +1268,10 @@
             .app-arrow {
                 display: none;
             }
-
             .app-icon {
                 width: 70px;
                 height: 70px;
             }
-
             .detail-header {
                 flex-direction: column;
                 text-align: center;
@@ -1323,7 +1321,6 @@
             text-align: center;
             animation: panelSlide 0.3s ease;
         }
-
         .confirm-icon {
             font-size: 40px;
             margin-bottom: 12px;
@@ -1369,12 +1366,10 @@
         .btn-confirm-cancel:hover {
             background: rgba(255, 255, 255, 0.1);
         }
-
         .btn-confirm-ok {
             background: linear-gradient(135deg, var(--accent), #ff6b35);
             color: white;
         }
-
         .btn-confirm-ok:hover {
             transform: translateY(-2px);
             box-shadow: var(--glow-accent);
@@ -1413,9 +1408,18 @@
         }
 
         .login-icon {
-            font-size: 48px;
-            margin-bottom: 16px;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
         }
+
+        .login-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;        }
 
         .login-title {
             font-size: 22px;
@@ -1464,8 +1468,7 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 14px;
-            color: white;
-            font-size: 15px;
+            color: white;            font-size: 15px;
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
             letter-spacing: 2px;
@@ -1514,8 +1517,7 @@
         window.db = db;
         window.auth = auth;
         window.appsCollection = appsCollection;
-        window.getDocs = getDocs;
-        window.addDoc = addDoc;
+        window.getDocs = getDocs;        window.addDoc = addDoc;
         window.updateDoc = updateDoc;
         window.deleteDoc = deleteDoc;
         window.doc = doc;
@@ -1533,7 +1535,9 @@
 
     <!-- LOADING SCREEN -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-logo">iP</div>
+        <div class="loading-logo">
+            <img src="https://i.ibb.co/rf550Fdp/20211122-192815.png" alt="iPlay Store Logo">
+        </div>
         <div class="loading-text">iPlay Store</div>
         <div class="loading-bar">
             <div class="loading-bar-fill"></div>
@@ -1549,7 +1553,9 @@
     <!-- HEADER -->
     <header class="header">
         <div class="logo">
-            <div class="logo-icon">iP</div>
+            <div class="logo-icon">
+                <img src="https://i.ibb.co/rf550Fdp/20211122-192815.png" alt="Logo">
+            </div>
             <div class="logo-text">iPlay <span>Store</span></div>
         </div>
         <button class="btn-menu" id="btnMenu" onclick="toggleMenu()">
@@ -1560,8 +1566,7 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
-        <!-- SEARCH -->
+    <main class="main-content">        <!-- SEARCH -->
         <div class="search-container">
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
@@ -1581,7 +1586,10 @@
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
     <nav class="side-menu" id="sideMenu">
         <div class="menu-header">
-            <h3>☰ MENU</h3>
+            <div class="menu-header-logo">
+                <img src="https://i.ibb.co/rf550Fdp/20211122-192815.png" alt="Logo">
+            </div>
+            <h3>MENU</h3>
         </div>
         <div class="menu-items">
             <div class="menu-item" onclick="openPanel()">
@@ -1607,8 +1615,7 @@
     </nav>
     
     <!-- APP DETAIL MODAL -->
-    <div class="modal-overlay" id="appDetailModal">
-        <div class="modal-content">
+    <div class="modal-overlay" id="appDetailModal">        <div class="modal-content">
             <div class="modal-handle"></div>
             <button class="modal-close" onclick="closeDetail()">✕</button>
             <div class="detail-header">
@@ -1657,8 +1664,7 @@
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Nome do App</label>
+                    <div class="form-group">                        <label class="form-label">Nome do App</label>
                         <input type="text" class="form-input" id="appName" placeholder="Ex: WhatsApp">
                     </div>
                     <div class="form-group">
@@ -1688,7 +1694,9 @@
     <!-- LOGIN MODAL -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
-            <div class="login-icon">🔐</div>
+            <div class="login-icon">
+                <img src="https://i.ibb.co/rf550Fdp/20211122-192815.png" alt="Logo">
+            </div>
             <div class="login-title">Acesso Restrito</div>
             <div class="login-subtitle">Digite suas credenciais para acessar o Painel</div>
             <input type="email" class="login-input" id="loginEmail" placeholder="E-mail" autocomplete="email">
@@ -1705,8 +1713,7 @@
             <div class="confirm-title">Excluir App?</div>
             <div class="confirm-text" id="confirmText">Tem certeza que deseja excluir este aplicativo? Esta ação não pode ser desfeita.</div>
             <div class="confirm-actions">
-                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
-                <button class="btn-confirm-ok" id="btnConfirmOk" onclick="confirmDelete()">Excluir</button>
+                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>                <button class="btn-confirm-ok" id="btnConfirmOk" onclick="confirmDelete()">Excluir</button>
             </div>
         </div>
     </div>
@@ -1716,13 +1723,13 @@
 
     <script>
         // ===== GLOBAL VARIABLES =====
-        let apps = [];              // Will be populated from Firebase
-        let editingId = null;      // Store Firebase document ID
+        let apps = [];
+        let editingId = null;
         let deletingId = null;
         let currentAppUrl = '';
         let currentPhotoData = null;
-        let unsubscribeSnapshot = null;  // Firestore real-time listener
-        let isAuthenticated = false;      // Track auth state
+        let unsubscribeSnapshot = null;
+        let isAuthenticated = false;
 
         // ===== MATRIX RAIN BACKGROUND =====
         const canvas = document.getElementById('matrixCanvas');
@@ -1750,14 +1757,12 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#0F0';
             ctx.font = fontSize + 'px monospace';
-
             for (let i = 0; i < drops.length; i++) {
                 const char = matrixChars[Math.floor(Math.random() * matrixChars.length)];
                 const x = i * fontSize;
                 const y = drops[i] * fontSize;
 
-                if (Math.random() > 0.95) {
-                    ctx.fillStyle = '#FFFFFF';
+                if (Math.random() > 0.95) {                    ctx.fillStyle = '#FFFFFF';
                 } else if (Math.random() > 0.9) {
                     ctx.fillStyle = '#AAFFAA';
                 } else {
@@ -1792,7 +1797,6 @@
                     isAuthenticated = true;
                     document.getElementById('logoutMenuItem').style.display = 'flex';
                     console.log("Usuário autenticado:", user.email);
-                    // If panel is waiting to open after login, open it
                     if (window.panelPendingOpen) {
                         window.panelPendingOpen = false;
                         openPanelAfterLogin();
@@ -1800,7 +1804,6 @@
                 } else {
                     isAuthenticated = false;
                     document.getElementById('logoutMenuItem').style.display = 'none';
-                    // Close panel if open
                     if (document.getElementById('panelOverlay').classList.contains('active')) {
                         closePanel();
                     }
@@ -1808,7 +1811,6 @@
                 }
             });
         }
-
         // ===== LOGIN FUNCTIONS =====
         function showLoginModal() {
             document.getElementById('loginEmail').value = '';
@@ -1839,7 +1841,6 @@
                 errorDiv.innerHTML = '';
                 closeLoginModal();
                 showToast('✅ Login realizado com sucesso!');
-                // Open panel after successful login
                 setTimeout(() => {
                     openPanelAfterLogin();
                 }, 300);
@@ -1859,9 +1860,8 @@
 
         async function logoutUser() {
             try {
-                await window.signOut(window.auth);
-                showToast('🔓 Sessão encerrada');
-                toggleMenu(); // Close side menu
+                await window.signOut(window.auth);                showToast('🔓 Sessão encerrada');
+                toggleMenu();
             } catch (error) {
                 console.error("Erro ao sair:", error);
                 showToast('Erro ao sair', true);
@@ -1870,11 +1870,10 @@
 
         // ===== OPEN PANEL WITH AUTH CHECK =====
         function openPanel() {
-            toggleMenu(); // Close side menu first
+            toggleMenu();
             if (isAuthenticated) {
                 openPanelAfterLogin();
             } else {
-                // Store that we want to open panel after login
                 window.panelPendingOpen = true;
                 showLoginModal();
             }
@@ -1889,7 +1888,6 @@
         // ===== FIREBASE REAL-TIME LISTENER =====
         async function initFirebaseListener() {
             try {
-                // Wait for Firebase modules to be available
                 if (!window.onSnapshot || !window.query || !window.orderBy) {
                     console.log("Aguardando Firebase...");
                     setTimeout(initFirebaseListener, 100);
@@ -1911,15 +1909,12 @@
                             createdAt: data.createdAt || new Date().toISOString()
                         });
                     });
-                    
-                    // Re-render UI
-                    const searchVal = document.getElementById('searchInput').value;
+                                        const searchVal = document.getElementById('searchInput').value;
                     renderApps(searchVal);
                     if (document.getElementById('formList').classList.contains('active')) {
                         renderPanelList();
                     }
                     
-                    // Hide loading screen after first data load
                     const loadingScreen = document.getElementById('loadingScreen');
                     if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
                         setTimeout(() => {
@@ -1950,7 +1945,6 @@
             }
 
             countEl.textContent = `${filtered.length} aplicativo${filtered.length !== 1 ? 's' : ''} disponível${filtered.length !== 1 ? 'is' : ''}`;
-
             if (filtered.length === 0) {
                 list.innerHTML = `
                     <div class="empty-state" style="grid-column: 1 / -1;">
@@ -1964,8 +1958,7 @@
                 return;
             }
             list.innerHTML = filtered.map((app) => `
-                <div class="app-item" onclick="openDetail('${app.id}')">
-                    <div class="app-icon">
+                <div class="app-item" onclick="openDetail('${app.id}')">                    <div class="app-icon">
                         ${app.photo
                             ? `<img src="${app.photo}" alt="${app.name}">`
                             : `<div class="app-icon-placeholder">📱</div>`
@@ -1980,7 +1973,6 @@
             `).join('');
         }
         
-        // Helper to escape HTML
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -2015,8 +2007,7 @@
                 btn.classList.remove('active');
             } else {
                 menu.classList.add('active');
-                overlay.classList.add('active');
-                btn.classList.add('active');
+                overlay.classList.add('active');                btn.classList.add('active');
             }
         }
         
@@ -2054,7 +2045,7 @@
             }
         }
 
-        // ===== PANEL FUNCTIONS (only accessible when authenticated) =====
+        // ===== PANEL FUNCTIONS =====
         function closePanel() {
             document.getElementById('panelOverlay').classList.remove('active');
             document.body.style.overflow = '';
@@ -2065,8 +2056,7 @@
             document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
 
-            document.getElementById('formAdd').classList.toggle('active', tab === 'add');
-            document.getElementById('formList').classList.toggle('active', tab === 'list');
+            document.getElementById('formAdd').classList.toggle('active', tab === 'add');            document.getElementById('formList').classList.toggle('active', tab === 'list');
 
             if (tab === 'list') renderPanelList();
         }
@@ -2099,7 +2089,6 @@
             const name = document.getElementById('appName').value.trim();
             const desc = document.getElementById('appDesc').value.trim();
             const url = document.getElementById('appUrl').value.trim();
-
             if (!name) {
                 showToast('Preencha o nome do app!', true);
                 return;
@@ -2107,7 +2096,6 @@
 
             try {
                 if (editingId) {
-                    // UPDATE existing app
                     const updateData = {
                         name: name,
                         description: desc,
@@ -2117,14 +2105,12 @@
                         updateData.photo = currentPhotoData;
                     }
                     
-                    const docRef = window.doc(window.db, "apps", editingId);
-                    await window.updateDoc(docRef, updateData);
+                    const docRef = window.doc(window.db, "apps", editingId);                    await window.updateDoc(docRef, updateData);
                     showToast('✅ App atualizado com sucesso!');
                     editingId = null;
                     document.getElementById('btnSubmit').textContent = '💾 Salvar Aplicativo';
                     document.getElementById('btnCancelEdit').style.display = 'none';
                 } else {
-                    // CREATE new app
                     const newApp = {
                         name: name,
                         description: desc,
@@ -2168,8 +2154,7 @@
             if (!isAuthenticated) {
                 showToast('Você precisa estar logado para editar', true);
                 return;
-            }
-            
+            }            
             const app = apps.find(a => a.id === id);
             if (!app) return;
 
@@ -2191,7 +2176,6 @@
             document.getElementById('btnSubmit').textContent = '✏️ Atualizar Aplicativo';
             document.getElementById('btnCancelEdit').style.display = 'block';
 
-            // Switch to add tab
             document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.panel-tab')[0].classList.add('active');
             document.getElementById('formAdd').classList.add('active');
@@ -2219,8 +2203,7 @@
                 } catch (error) {
                     console.error("Erro ao excluir:", error);
                     showToast('Erro ao excluir: ' + error.message, true);
-                }
-                deletingId = null;
+                }                deletingId = null;
             }
             closeConfirm();
         }
@@ -2269,8 +2252,7 @@
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = 'toast' + (isError ? ' error' : '');
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.add('show'), 10);            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // ===== CLOSE MODALS ON OVERLAY CLICK =====
@@ -2307,9 +2289,7 @@
         
         // ===== INITIALIZE APP =====
         window.addEventListener('load', () => {
-            // Initialize auth listener first
             initAuthListener();
-            // Initialize Firebase Firestore listener
             setTimeout(() => {
                 initFirebaseListener();
             }, 100);
