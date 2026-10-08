@@ -48,7 +48,8 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            background: #000000;        }
+            background: #000000;
+        }
 
         #matrixCanvas {
             display: block;
@@ -97,7 +98,8 @@
             justify-content: center;
             box-shadow: 0 0 60px rgba(0, 240, 255, 0.5), 0 0 100px rgba(123, 47, 255, 0.3);
             animation: loadingPulse 1.5s ease-in-out infinite;
-            margin-bottom: 20px;            overflow: hidden;
+            margin-bottom: 20px;
+            overflow: hidden;
             background: linear-gradient(135deg, #00f0ff, #7b2fff, #ff2d95);
             padding: 3px;
         }
@@ -146,7 +148,8 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
-        /* ===== HEADER ===== */        .header {
+        /* ===== HEADER ===== */
+        .header {
             position: fixed;
             top: 0;
             left: 0;
@@ -195,7 +198,8 @@
             content: '';
             position: absolute;
             top: -50%;
-            left: -50%;            width: 200%;
+            left: -50%;
+            width: 200%;
             height: 200%;
             background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.2) 50%, transparent 60%);
             animation: logoShine 3s ease-in-out infinite;
@@ -244,7 +248,8 @@
             border-color: var(--primary);
             box-shadow: var(--glow-primary);
         }
-        .btn-menu .bar {            width: 20px;
+        .btn-menu .bar {
+            width: 20px;
             height: 2px;
             background: var(--primary);
             border-radius: 2px;
@@ -293,7 +298,8 @@
 
         .search-input {
             width: 100%;
-            padding: 14px 16px 14px 48px;            background: rgba(10, 10, 30, 0.9);
+            padding: 14px 16px 14px 48px;
+            background: rgba(10, 10, 30, 0.9);
             border: 1px solid var(--border-glass);
             border-radius: 16px;
             color: var(--text-primary);
@@ -440,7 +446,8 @@
             color: var(--text-primary);
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;            font-family: 'Exo 2', sans-serif;
+            text-overflow: ellipsis;
+            font-family: 'Exo 2', sans-serif;
         }
 
         .app-category {
@@ -489,7 +496,8 @@
 
         @keyframes emptyPulse {
             0%, 100% { transform: scale(1); border-color: var(--border-glass); }
-            50% { transform: scale(1.05); border-color: rgba(0, 240, 255, 0.3); }        }
+            50% { transform: scale(1.05); border-color: rgba(0, 240, 255, 0.3); }
+        }
 
         .empty-title {
             font-size: 20px;
@@ -538,7 +546,8 @@
             max-width: 500px;
             max-height: 85vh;
             background: linear-gradient(180deg, #12122e 0%, #0a0a1a 100%);
-            border-radius: 24px 24px 0 0;            border: 1px solid var(--border-glass);
+            border-radius: 24px 24px 0 0;
+            border: 1px solid var(--border-glass);
             border-bottom: none;
             overflow-y: auto;
             animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -685,13 +694,15 @@
             border-radius: 16px;
             color: white;
             font-size: 16px;
-            font-weight: 700;            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-family: 'Orbitron', sans-serif;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
             text-transform: uppercase;
+            margin-bottom: 24px;
         }
         .btn-download::before {
             content: '';
@@ -734,7 +745,8 @@
 
         .menu-overlay.active {
             display: block;
-            opacity: 1;        }
+            opacity: 1;
+        }
 
         .side-menu {
             position: fixed;
@@ -783,7 +795,8 @@
             font-size: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             letter-spacing: 2px;
         }
 
@@ -930,7 +943,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;        }
+            transition: all 0.3s;
+        }
 
         .panel-close:hover {
             background: rgba(255, 45, 149, 0.2);
@@ -979,7 +993,8 @@
             display: block;
         }
         .form-group {
-            margin-bottom: 18px;        }
+            margin-bottom: 18px;
+        }
 
         .form-label {
             display: block;
@@ -1028,7 +1043,8 @@
         }
         .form-file-label {
             display: flex;
-            align-items: center;            justify-content: center;
+            align-items: center;
+            justify-content: center;
             gap: 10px;
             padding: 20px;
             background: var(--bg-glass);
@@ -1077,7 +1093,8 @@
             padding: 16px;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
-            border-radius: 14px;            color: white;
+            border-radius: 14px;
+            color: white;
             font-size: 15px;
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
@@ -1126,7 +1143,8 @@
             width: 44px;
             height: 44px;
             border-radius: 12px;
-            object-fit: cover;            flex-shrink: 0;
+            object-fit: cover;
+            flex-shrink: 0;
             overflow: hidden;
         }
 
@@ -1175,7 +1193,8 @@
         }
 
         .btn-edit, .btn-delete {
-            width: 36px;            height: 36px;
+            width: 36px;
+            height: 36px;
             border: none;
             border-radius: 10px;
             cursor: pointer;
@@ -1420,7 +1439,8 @@
         .login-icon img {
             width: 100%;
             height: 100%;
-            object-fit: cover;        }
+            object-fit: cover;
+        }
 
         .login-title {
             font-size: 22px;
@@ -1469,7 +1489,8 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: none;
             border-radius: 14px;
-            color: white;            font-size: 15px;
+            color: white;
+            font-size: 15px;
             font-weight: 700;
             font-family: 'Orbitron', sans-serif;
             letter-spacing: 2px;
@@ -1518,7 +1539,8 @@
         window.db = db;
         window.auth = auth;
         window.appsCollection = appsCollection;
-        window.getDocs = getDocs;        window.addDoc = addDoc;
+        window.getDocs = getDocs;
+        window.addDoc = addDoc;
         window.updateDoc = updateDoc;
         window.deleteDoc = deleteDoc;
         window.doc = doc;
@@ -1567,7 +1589,8 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">        <!-- SEARCH -->
+    <main class="main-content">
+        <!-- SEARCH -->
         <div class="search-container">
             <div class="search-wrapper">
                 <span class="search-icon">🔍</span>
@@ -1616,7 +1639,8 @@
     </nav>
     
     <!-- APP DETAIL MODAL -->
-    <div class="modal-overlay" id="appDetailModal">        <div class="modal-content">
+    <div class="modal-overlay" id="appDetailModal">
+        <div class="modal-content">
             <div class="modal-handle"></div>
             <button class="modal-close" onclick="closeDetail()">✕</button>
             <div class="detail-header">
@@ -1627,13 +1651,13 @@
                 </div>
             </div>
             <div class="detail-body">
+                <button class="btn-download" id="btnDownload" onclick="downloadApp()">
+                    ⬇ Download
+                </button>
                 <div class="detail-description-label">Descrição</div>
                 <div class="detail-description" id="detailDesc"></div>
                 <div class="detail-url-label">Link de Download</div>
                 <div class="detail-url" id="detailUrl"></div>
-                <button class="btn-download" id="btnDownload" onclick="downloadApp()">
-                    ⬇ Download
-                </button>
             </div>
         </div>
     </div>
@@ -1665,7 +1689,8 @@
                             </label>
                         </div>
                     </div>
-                    <div class="form-group">                        <label class="form-label">Nome do App</label>
+                    <div class="form-group">
+                        <label class="form-label">Nome do App</label>
                         <input type="text" class="form-input" id="appName" placeholder="Ex: WhatsApp">
                     </div>
                     <div class="form-group">
@@ -1714,7 +1739,8 @@
             <div class="confirm-title">Excluir App?</div>
             <div class="confirm-text" id="confirmText">Tem certeza que deseja excluir este aplicativo? Esta ação não pode ser desfeita.</div>
             <div class="confirm-actions">
-                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>                <button class="btn-confirm-ok" id="btnConfirmOk" onclick="confirmDelete()">Excluir</button>
+                <button class="btn-confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+                <button class="btn-confirm-ok" id="btnConfirmOk" onclick="confirmDelete()">Excluir</button>
             </div>
         </div>
     </div>
@@ -1763,7 +1789,8 @@
                 const x = i * fontSize;
                 const y = drops[i] * fontSize;
 
-                if (Math.random() > 0.95) {                    ctx.fillStyle = '#FFFFFF';
+                if (Math.random() > 0.95) {
+                    ctx.fillStyle = '#FFFFFF';
                 } else if (Math.random() > 0.9) {
                     ctx.fillStyle = '#AAFFAA';
                 } else {
@@ -1861,7 +1888,8 @@
 
         async function logoutUser() {
             try {
-                await window.signOut(window.auth);                showToast('🔓 Sessão encerrada');
+                await window.signOut(window.auth);
+                showToast('🔓 Sessão encerrada');
                 toggleMenu();
             } catch (error) {
                 console.error("Erro ao sair:", error);
@@ -1910,7 +1938,7 @@
                             createdAt: data.createdAt || new Date().toISOString()
                         });
                     });
-                                        const searchVal = document.getElementById('searchInput').value;
+                    const searchVal = document.getElementById('searchInput').value;
                     renderApps(searchVal);
                     if (document.getElementById('formList').classList.contains('active')) {
                         renderPanelList();
@@ -1959,7 +1987,8 @@
                 return;
             }
             list.innerHTML = filtered.map((app) => `
-                <div class="app-item" onclick="openDetail('${app.id}')">                    <div class="app-icon">
+                <div class="app-item" onclick="openDetail('${app.id}')">
+                    <div class="app-icon">
                         ${app.photo
                             ? `<img src="${app.photo}" alt="${app.name}">`
                             : `<div class="app-icon-placeholder">📱</div>`
@@ -2008,7 +2037,8 @@
                 btn.classList.remove('active');
             } else {
                 menu.classList.add('active');
-                overlay.classList.add('active');                btn.classList.add('active');
+                overlay.classList.add('active');
+                btn.classList.add('active');
             }
         }
         
@@ -2057,7 +2087,8 @@
             document.querySelectorAll('.panel-tab').forEach(t => t.classList.remove('active'));
             btn.classList.add('active');
 
-            document.getElementById('formAdd').classList.toggle('active', tab === 'add');            document.getElementById('formList').classList.toggle('active', tab === 'list');
+            document.getElementById('formAdd').classList.toggle('active', tab === 'add');
+            document.getElementById('formList').classList.toggle('active', tab === 'list');
 
             if (tab === 'list') renderPanelList();
         }
@@ -2106,7 +2137,8 @@
                         updateData.photo = currentPhotoData;
                     }
                     
-                    const docRef = window.doc(window.db, "apps", editingId);                    await window.updateDoc(docRef, updateData);
+                    const docRef = window.doc(window.db, "apps", editingId);
+                    await window.updateDoc(docRef, updateData);
                     showToast('✅ App atualizado com sucesso!');
                     editingId = null;
                     document.getElementById('btnSubmit').textContent = '💾 Salvar Aplicativo';
@@ -2204,7 +2236,8 @@
                 } catch (error) {
                     console.error("Erro ao excluir:", error);
                     showToast('Erro ao excluir: ' + error.message, true);
-                }                deletingId = null;
+                }
+                deletingId = null;
             }
             closeConfirm();
         }
@@ -2253,7 +2286,8 @@
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = 'toast' + (isError ? ' error' : '');
-            setTimeout(() => toast.classList.add('show'), 10);            setTimeout(() => toast.classList.remove('show'), 3000);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // ===== CLOSE MODALS ON OVERLAY CLICK =====
